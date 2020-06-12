@@ -1,4 +1,5 @@
 ## Osa0
+En ollut aivan varma kuinka yksityiskohtaisesti nää piti tehdä. 
 
 #### 0.4 Uusi muistiinpano
 ![0.4](https://github.com/brontto/fullstack2020/blob/master/osa0/0.4.%20uusi%20muistiinpano.png)
