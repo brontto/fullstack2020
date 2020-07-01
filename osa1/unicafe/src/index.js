@@ -19,9 +19,11 @@ const Display = () => <div>No feedback given</div>
 
 const StatisticLine = (props) => {
   return (
-    <div>
-      {props.text}, {props.value} {props.textend}
-    </div>
+    <tr>
+      <td>{props.text}</td>
+      <td>{props.value}</td>
+      <td>{props.textend}</td>
+    </tr>
   )
 }
 
@@ -34,14 +36,16 @@ const Statistics = (props) => {
     )
   }
   return (
-    <div>
+    <table>
+      <tbody>
       <StatisticLine text="good" value={props.good} />
       <StatisticLine text="neutral" value={props.neutral} />
       <StatisticLine text="bad" value={props.bad} />
       <StatisticLine text="all" value={props.all} />
       <StatisticLine text="avarage" value={(props.good - props.bad) / props.all} />
       <StatisticLine text="positive" value={props.good / props.all} textend="%" />
-    </div>
+      </tbody>
+    </table>
   )
 }
 
