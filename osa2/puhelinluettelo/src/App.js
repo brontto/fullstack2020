@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react'
-import axios from 'axios'
-import Persons from './components/Persons'
+import Person from './components/Person'
 import PersonForm from './components/PersonForm'
 import Header from './components/Header'
-
+import personsService from './services/persons'
 
 const App = () => {
     const [persons, setPersons] = useState([])
@@ -11,29 +10,36 @@ const App = () => {
     const [newName, setNewName] = useState('')
     const [newNumber, setNewNumber] = useState('')
 
+
     useEffect(() => {
         console.log('effect')
-        axios
-        .get('http://localhost:3001/persons')
-        .then(response => {
-            console.log('promise fulfilled')
-            setPersons(response.data)
-        })
-    },[])
+        personsService
+            .getAll()
+            .then(intialPersons => {
+                setPersons(intialPersons)
+            })
+    }, [])
+
     const addName = (event) => {
+        console.log('add')
         event.preventDefault()
 
         if (persons.some(p => p.name === newName)) {
             alert(`${newName} is already added to phonebook`)
 
         } else {
-            const nameObject = {
+            const personObject = {
                 name: newName,
                 number: newNumber
             }
-            setPersons(persons.concat(nameObject))
-            setNewName('')
-            setNewNumber('')
+
+            personsService
+                .create(personObject)
+                .then(returnedPerson => {
+                    setPersons(persons.concat(returnedPerson))
+                    setNewName('')
+                    setNewNumber('')
+                })
         }
     }
 
@@ -46,19 +52,43 @@ const App = () => {
         setNewNumber(event.target.value)
     }
 
+    const delPerson = (person) => {
+        if (window.confirm(`Delete ${person.name} ?`)) {
+            personsService
+                .remove(person.id)
+                .then(() => {
+                    personsService
+                        .getAll()
+                        .then(intialPersons => {
+                            setPersons(intialPersons)
+                            setNewName('')
+                            setNewNumber('')
+                        })
+                })
+        }
+    }
 
     return (
         <div>
-            <Header text='Phonebook'/>
+            <Header text='Phonebook' />
             <PersonForm
-                addName={addName}
-                handleNameChange={handleNameChange}
-                handleNumberChange={handleNumberChange}
+                addName={(e) => addName(e)}
+                handleNameChange={(e) => handleNameChange(e)}
+                handleNumberChange={(e) => handleNumberChange(e)}
                 newName={newName}
                 newNumber={newNumber}
             />
-            <Header text='Numbers'/>
-            <Persons persons={persons} />
+            <Header text='Numbers' />
+            <ul>
+                {persons.map((part, i) =>
+                    <Person
+                        key={i}
+                        person={part}
+                        delPerson={() => delPerson(part)}
+                    />
+                )}
+            </ul>
+
         </div>
     )
 
