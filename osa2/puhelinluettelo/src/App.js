@@ -3,6 +3,7 @@ import Person from './components/Person'
 import PersonForm from './components/PersonForm'
 import Header from './components/Header'
 import personsService from './services/persons'
+import Notification from './components/Notification'
 
 const App = () => {
     const [persons, setPersons] = useState([])
@@ -10,6 +11,7 @@ const App = () => {
     const [newName, setNewName] = useState('')
     const [newNumber, setNewNumber] = useState('')
 
+    const [notification, setNotification] = useState(null)
 
     useEffect(() => {
         console.log('effect')
@@ -26,7 +28,6 @@ const App = () => {
 
         if (persons.some(p => p.name === newName)) {
             alert(`${newName} is already added to phonebook`)
-
         } else {
             const personObject = {
                 name: newName,
@@ -40,6 +41,13 @@ const App = () => {
                     setNewName('')
                     setNewNumber('')
                 })
+
+            setNotification(
+                `${newName} is added to phonebook`
+            )
+            setTimeout(() => {
+                setNotification(null)
+            }, 4000)
         }
     }
 
@@ -65,12 +73,20 @@ const App = () => {
                             setNewNumber('')
                         })
                 })
+
+            setNotification(
+                `${newName} is deleted from phonebook`
+            )
+            setTimeout(() => {
+                setNotification(null)
+            }, 4000)
         }
     }
 
     return (
         <div>
             <Header text='Phonebook' />
+            <Notification message={notification} />
             <PersonForm
                 addName={(e) => addName(e)}
                 handleNameChange={(e) => handleNameChange(e)}
